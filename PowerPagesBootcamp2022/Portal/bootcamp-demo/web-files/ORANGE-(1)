@@ -1,0 +1,108 @@
+
+$presetThemeId: 329a43fa-5471-4678-8330-d3a0b404e9bb;
+$isModified: true;
+
+$color1: #2E456B;
+$color2: #FFCA4B;
+$color3: #277493;
+$color4: #FEA002;
+$color5: #F3DBB1;
+$color6: #88ABA2;
+$color7: #FFFFFF;
+$color8: #2A2C2E;
+$color9: #E58700;
+$color10: #d92727;
+$color11: ;
+$color12: ;
+
+$primaryColor: $color2;
+$headerColor: $color1;
+$headerMenuTextColor: $color7;
+$headerMenuHoverColor: $color4;
+$bodyBackground: $color7;
+$footerColor: $color6;
+$footerTextColor: $color8;
+$footerTextFont: Arial;
+$footerTextWeight: 400;
+$footerTextSize: 16;
+
+$headerMenuTextFont: Arial;
+$headerMenuTextWeight: 400;
+$headerMenuTextSize: 20;
+$headerMenuHoverStyle: Underline;
+
+$siteTitlecolor: $color7;
+$siteTitlefont: Arial;
+$siteTitleweight: 400;
+$siteTitlesize: 30;
+
+$h1font: Arial;
+$h1weight: 400;
+$h1size: 40;
+$h1color: $color8;
+
+$h2font: Arial;
+$h2weight: 400;
+$h2size: 36;
+$h2color: $color8;
+
+$h3font: Arial;
+$h3weight: 400;
+$h3size: 24;
+$h3color: $color8;
+
+$h4font: Arial;
+$h4weight: 700;
+$h4size: 24;
+$h4color: $color8;
+
+$h5font: Arial;
+$h5weight: 700;
+$h5size: 14;
+$h5color: $color8;
+
+$p1font: Arial;
+$p1weight: 400;
+$p1size: 20;
+$p1color: $color8;
+
+$p2font: Arial;
+$p2weight: 400;
+$p2size: 16;
+$p2color: $color8;
+
+$afont: Arial;
+$aweight: 400;
+$asize: 14;
+$atextcolor: $color4;
+$astyle: Plain text;
+$aonhoverstyle: Underline;
+$aonhovertextcolor: $color9;
+
+$button1style: Filled;
+$button1radius: 2;
+$button1font: Arial;
+$button1weight: 600;
+$button1size: 14;
+$button1fillcolor: $color3;
+$button1textcolor: $color8;
+$button1onhoverstyle: Filled;
+$button1onhoverfillcolor: $color9;
+$button1onhovertextcolor: $color8;
+
+$button2style: Outline;
+$button2radius: 2;
+$button2font: Arial;
+$button2weight: 600;
+$button2size: 14;
+$button2fillcolor: $color4;
+$button2textcolor: $color4;
+$button2onhoverstyle: Filled;
+$button2onhoverfillcolor: $color9;
+$button2onhovertextcolor: $color8;
+
+$sectioncolumnmargintopbottom: 60;
+$sectioncolumnmarginunit: px;
+$sectioncolumnpaddingunit: px;
+$sectioncolumncontentpadding: 16;
+
