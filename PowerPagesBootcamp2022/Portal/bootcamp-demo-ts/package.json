@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "build": "tsc --build",
-    "clean": "tsc --build --clean"
-  },
-  "devDependencies": {
-    "@types/jquery": "^3.5.14"
-  }
-}
