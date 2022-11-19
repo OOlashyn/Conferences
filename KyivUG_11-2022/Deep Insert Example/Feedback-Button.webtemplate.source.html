@@ -1,0 +1,250 @@
+<style>
+  .btn_action {
+    cursor: pointer;
+    outline: none;
+    /* fix our button in the right buttom corner  */
+    position: fixed;
+    bottom: 23px;
+    right: 28px;
+    /* place it on top of the content of the page */
+    z-index: 5;
+    display: flex;
+    align-items: baseline;
+    font-size: 18px;
+    border-radius: 20px;
+    -webkit-box-shadow: 0px 0px 6px 0px #000000;
+    box-shadow: 0px 0px 6px 0px #000000;
+  }
+
+  /* remove transparency on hover */
+  .btn_action:hover {
+    opacity: none;
+  }
+
+  .btn_action__text {
+    text-transform: uppercase;
+  }
+
+  .btn_action__icon {
+    margin-right: 6px;
+  }
+
+  .form_container {
+    background-color: white;
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    bottom: 20px;
+    right: 15px;
+    /* add small border */
+    border: 3px solid #f1f1f1;
+    /* place it on top of the content of the page */
+    /* it must be bigger then z-index of open button */
+    z-index: 9;
+    width: 360px;
+    height: 350px;
+    padding: 15px;
+  }
+
+  .form_container__input {
+    background-color: white;
+    margin-bottom: 15px;
+  }
+
+  .form_container__select {
+    background-color: #ffffff !important;
+    color: #000000;
+  }
+
+  .form_container__label {
+    color: #000000;
+  }
+
+  .form_container__close {
+    color: black;
+    cursor: pointer;
+    align-self: flex-end;
+  }
+</style>
+<script>
+  (function (webapi, $) {
+    function safeAjax(ajaxOptions) {
+      var deferredAjax = $.Deferred();
+
+      shell
+        .getTokenDeferred()
+        .done(function (token) {
+          // add headers for AJAX
+          if (!ajaxOptions.headers) {
+            $.extend(ajaxOptions, {
+              headers: {
+                __RequestVerificationToken: token,
+              },
+            });
+          } else {
+            ajaxOptions.headers["__RequestVerificationToken"] = token;
+          }
+          $.ajax(ajaxOptions)
+            .done(function (data, textStatus, jqXHR) {
+              validateLoginSession(
+                data,
+                textStatus,
+                jqXHR,
+                deferredAjax.resolve
+              );
+            })
+            .fail(deferredAjax.reject); //AJAX
+        })
+        .fail(function () {
+          deferredAjax.rejectWith(this, arguments); // on token failure pass the token AJAX and args
+        });
+
+      return deferredAjax.promise();
+    }
+    webapi.safeAjax = safeAjax;
+  })((window.webapi = window.webapi || {}), jQuery);
+
+  function openForm() {
+    $("#myForm").css("display", "flex");
+  }
+
+  function closeForm() {
+    $("#myForm").css("display", "none");
+  }
+
+ async function createUserFeedback() {
+    $("#sbmBtn").text("Sending...");
+
+    const subject = $("#fsubject").val();
+    const feedbackType = $("#ffeedbacktype").val();
+    const description = $("#fdescription").val();
+
+    const data = {
+      dwcrm_description: description,
+      dwcrm_feedbacktype: feedbackType,
+      dwcrm_subject: subject,
+    };
+
+    let file = document.getElementById("fattachments");
+    if(file.files.length > 0){
+      file = file.files[0];
+      const base64str = await readFileAsync(file);
+      data.dwcrm_userfeedback_Annotations = [
+        {
+          notetext: "Screenshot attached",
+          subject: "Attachment",
+          filename: file.name,
+          mimetype: file.type,
+          documentbody: base64str,
+        },
+      ];
+    }
+
+    // {
+    //   dwcrm_description: description,
+    //   dwcrm_feedbacktype: feedbackType,
+    //   dwcrm_subject: subject,
+    //   dwcrm_userfeedback_Annotations = [
+    //     {
+    //       notetext: "Screenshot attached",
+    //       subject: "Attachment",
+    //       filename: file.name,
+    //       mimetype: file.type,
+    //       documentbody: base64str,
+    //     },
+    //   ]
+    // }
+
+    webapi.safeAjax({
+      type: "POST",
+      url: "/_api/dwcrm_userfeedbacks",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function (res, status, xhr) {
+        $("#sbmBtn").text("Success!");
+        $("#sbmBtn").removeClass("btn-primary").addClass("btn-success");
+        console.log("entityID: " + xhr.getResponseHeader("entityid"));
+      },
+      error: function (xhr, status, error) {
+        $("#sbmBtn").text("Error!");
+        $("#sbmBtn").removeClass("btn-primary").addClass("btn-danger");
+        console.error("xhr:", xhr);
+        console.error("Error occured:", error);
+        console.log("Error responseText: " + xhr.responseText);
+      },
+    });
+  }
+
+  function readFileAsync(file) {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+
+      reader.onerror = reject;
+
+      reader.readAsDataURL(file);
+    });
+  }
+
+  $(document).ready(function () {
+    $("footer").append(
+      `<button class="btn_action btn btn-primary" id="openBtn">
+        <i class="fa fa-paper-plane btn_action__icon"></i>
+        <span class="btn_action__text">Contact Us</span>
+        </button>`
+    );
+
+    $("#sbmBtn").off();
+    $("#closeBtn").off();
+    $("#openBtn").off();
+
+
+    $("#sbmBtn").click(function (ev) {
+        ev.preventDefault();
+      createUserFeedback();
+    });
+    $("#closeBtn").click(function (ev) {
+        ev.preventDefault();
+      closeForm();
+    });
+    $("#openBtn").click(function (ev) {
+        ev.preventDefault();
+      openForm();
+    });
+  });
+</script>
+
+<div class="form_container" id="myForm">
+  <i id="closeBtn" class="fa fa-times form_container__close"></i>
+
+  <label for="fname" class="form_container__label">Subject</label>
+  <input
+    class="form_container__input"
+    type="text"
+    id="fsubject"
+    name="subject"
+    placeholder="Subject goes here.."
+  />
+
+  <label for="lname" class="form_container__label">Feedback Type</label>
+  <select name="ffeedbacktype" id="ffeedbacktype" class="form_container__select picklist">
+    <option selected="selected" value=""></option>
+    <option value="249590000">Issue</option>
+    <option value="249590001">Comment</option>
+    <option value="249590002">Feature Request</option>
+  </select>
+  <label for="fdescription" class="form_container__label">Desciption</label>
+  <input
+    class="form_container__input"
+    type="text"
+    id="fdescription"
+    name="fdescription"
+    placeholder="Your feedback description.."
+  />
+  <input type="file" name="" id="fattachments" class="form_container__input" style="color: black;"/>
+
+  <button class="btn btn-primary" id="sbmBtn">Submit</button>
+</div>
